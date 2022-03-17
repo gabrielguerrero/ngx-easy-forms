@@ -1,0 +1,14 @@
+{
+  "branches": ["main", "next"],
+  "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      ["@semantic-release/exec", {
+         "prepareCmd": "cd dist/libs/ngx-easy-forms/ && npm version ${nextRelease.version}",
+       }],
+      ["@semantic-release/npm",{
+        "pkgRoot": "dist/libs/ngx-easy-forms"
+        }],
+      "@semantic-release/github"
+    ]
+}

@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "projects": {
+    "ngx-easy-forms": {
+      "projectType": "library",
+      "root": "libs/ngx-easy-forms",
+      "sourceRoot": "libs/ngx-easy-forms/src",
+      "prefix": "ngx-easy-forms",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "outputs": ["dist/libs/ngx-easy-forms"],
+          "options": {
+            "project": "libs/ngx-easy-forms/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/ngx-easy-forms/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/ngx-easy-forms/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ngx-easy-forms"],
+          "options": {
+            "jestConfig": "libs/ngx-easy-forms/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/ngx-easy-forms/src/**/*.ts",
+              "libs/ngx-easy-forms/src/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    },
+    "@schematics/angular": {
+      "component": {
+        "inlineStyle": true,
+        "inlineTemplate": true,
+        "changeDetection": "OnPush"
+      }
+    },
+    "@ngneat/spectator:spectator-component": {
+      "jest": true,
+      "inlineStyle": true,
+      "inlineTemplate": true,
+      "changeDetection": "OnPush"
+    }
+  }
+}
