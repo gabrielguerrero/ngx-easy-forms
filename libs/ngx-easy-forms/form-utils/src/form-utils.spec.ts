@@ -13,10 +13,10 @@ import {
   resetForm,
   setDisableAllFieldsExcept,
   setDisableFields,
-} from '../form-utils/index';
+} from 'ngx-easy-forms/form-utils';
 import { of } from 'rxjs/internal/observable/of';
 import { spy, verify } from 'ts-mockito';
-import { FormGroupTyped } from '../typed-forms';
+import { FormGroupTyped } from 'ngx-easy-forms/typed-forms';
 
 interface TestForm {
   name: string;

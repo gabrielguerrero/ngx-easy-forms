@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 
 describe('SubmitDirective', () => {
   const template = `
-    <form [formGroup]="form" (mvSubmit)="submit()">
+    <form [formGroup]="form" (ngxSubmit)="submit()">
 
       <mat-form-field label="Name" data-test="name">
         <input formControlName="name" matInput type="text" class="form-control" />

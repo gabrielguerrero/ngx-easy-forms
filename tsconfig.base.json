@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "ngx-easy-forms": ["libs/ngx-easy-forms/src/index.ts"]
+      "ngx-easy-forms/typed-forms": ["libs/ngx-easy-forms/typed-forms/src/index.ts"],
+      "ngx-easy-forms/submit": ["libs/ngx-easy-forms/submit/src/index.ts"],
+      "ngx-easy-forms/form-utils": ["libs/ngx-easy-forms/form-utils/src/index.ts"],
+      "ngx-easy-forms/control-value-accessor": ["libs/ngx-easy-forms/control-value-accessor/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

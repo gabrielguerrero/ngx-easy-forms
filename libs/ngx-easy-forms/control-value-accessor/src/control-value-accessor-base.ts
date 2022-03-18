@@ -21,8 +21,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { extractTouchedChanges } from './control-value-accesor.utils';
-import { SubmitDirective } from '../submit';
-import { forceValidation, getFormErrors, isObjectEmpty } from '../form-utils';
+import { SubmitDirective } from 'ngx-easy-forms/submit';
+import {
+  forceValidation,
+  getFormErrors,
+  isObjectEmpty,
+} from 'ngx-easy-forms/form-utils';
 // eslint-disable-next-line no-restricted-imports
 
 import { Observable, Subject } from 'rxjs';

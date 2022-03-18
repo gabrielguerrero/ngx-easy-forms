@@ -13,13 +13,14 @@ import {
   forceValidation,
   isFormValid,
   resetForm,
-} from '../form-utils';
+} from 'ngx-easy-forms/form-utils';
 
 @Directive({
-  selector: '[mvSubmit]',
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[ngxSubmit]',
 })
 export class SubmitDirective {
-  @Output() mvSubmit = new EventEmitter();
+  @Output() ngxSubmit = new EventEmitter();
 
   @Input() resetValue: any;
   @Input() set resetOn(value: boolean) {
@@ -29,7 +30,7 @@ export class SubmitDirective {
 
   constructor(
     private formDirective: FormGroupDirective,
-    @Inject(DOCUMENT) @Optional() private _document = document,
+    @Inject(DOCUMENT) @Optional() private _document = document
   ) {}
 
   @HostListener('focusin')
@@ -54,10 +55,10 @@ export class SubmitDirective {
       }
       isFormValid(form).subscribe((valid) => {
         if (valid) {
-          this.mvSubmit.emit(form.value);
+          this.ngxSubmit.emit(form.value);
         } else {
           const element = this._document.querySelector(
-            '.mat-form-field-invalid',
+            '.mat-form-field-invalid'
           );
           if (element) {
             // we check element.scrollIntoView exist because in jest it doesnt,
@@ -78,9 +79,8 @@ export class SubmitDirective {
   }
 
   unregisterForValidation(component: HasForceValidation) {
-    this.componentsWithForceValidation = this.componentsWithForceValidation.filter(
-      (v) => v !== component,
-    );
+    this.componentsWithForceValidation =
+      this.componentsWithForceValidation.filter((v) => v !== component);
   }
 }
 

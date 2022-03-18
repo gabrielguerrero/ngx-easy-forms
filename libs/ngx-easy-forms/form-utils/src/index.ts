@@ -6,8 +6,7 @@ import {
   FormControl,
   FormGroup,
 } from '@angular/forms';
-import { FormGroupTyped } from '../typed-forms';
-// import { FormGroupTyped } from '../typed-forms';
+import { FormGroupTyped } from 'ngx-easy-forms/typed-forms';
 
 export function forceValidation(form: AbstractControl, ...fields: string[]) {
   if (form instanceof FormGroup || form instanceof FormArray) {
@@ -52,7 +51,7 @@ export function isFormValid(form: FormGroup): Observable<boolean> {
     startWith(form.status),
     filter((status) => status !== 'PENDING'),
     take(1),
-    map((status) => status === 'VALID'),
+    map((status) => status === 'VALID')
   );
 }
 
@@ -69,7 +68,9 @@ export function getFormErrors(form: AbstractControl, includeExternal = false) {
     const groupErrors = errors;
 
     // Form group can contain errors itself, in that case add'em
-    const formErrors = isObjectEmpty(groupErrors) ? {} as any : { groupErrors };
+    const formErrors = isObjectEmpty(groupErrors)
+      ? ({} as any)
+      : { groupErrors };
     Object.keys(form.controls).forEach((key) => {
       // Recursive call of the FormGroup fields
       let control = form.get(key);
@@ -110,7 +111,7 @@ export function setDisableAllFieldsExcept<T, K extends keyof T>(
   disable: boolean,
   form: FormGroupTyped<T> | FormGroup,
   excludedFieldNames: K[],
-  emitEvent = false,
+  emitEvent = false
 ) {
   for (const control in form.controls) {
     const fieldName = control as string as K;
@@ -123,7 +124,7 @@ export function setDisableFields<T, K extends keyof T>(
   disable: boolean,
   form: FormGroupTyped<T> | FormGroup,
   fieldNames: K[],
-  emitEvent = false,
+  emitEvent = false
 ) {
   for (const fieldName of fieldNames) {
     setDisableField(disable, form, fieldName, emitEvent);
@@ -134,7 +135,7 @@ export function setDisableField<T, K extends keyof T>(
   disable: boolean,
   form: FormGroupTyped<T> | FormGroup,
   fieldName: K,
-  emitEvent = false,
+  emitEvent = false
 ) {
   disable
     ? form.get(fieldName as string)!.disable({ emitEvent })
@@ -152,7 +153,7 @@ export function rebuildFormArray<T>(
   form: FormArray,
   buildRow: (value: T) => AbstractControl,
   values: T[],
-  selectId: (value: T) => string,
+  selectId: (value: T) => string
 ) {
   // sort controls in the same order as in values
   form.controls.sort((a, b) => {

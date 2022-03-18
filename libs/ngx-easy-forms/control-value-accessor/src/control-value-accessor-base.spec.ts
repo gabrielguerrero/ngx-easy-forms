@@ -12,9 +12,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ControlValueAccessorBase } from '../control-value-accessor/control-value-accessor-base';
-import { forceValidation } from '../form-utils';
-import { typedFbGroup } from '../typed-forms';
+import { ControlValueAccessorBase } from './control-value-accessor-base';
+import { forceValidation } from 'ngx-easy-forms/form-utils';
+import { typedFbGroup } from 'ngx-easy-forms/typed-forms';
 // eslint-disable-next-line no-restricted-imports
 import { createHostFactory } from '@ngneat/spectator/jest';
 
