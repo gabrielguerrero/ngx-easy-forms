@@ -3,14 +3,13 @@ import {
   AbstractControlOptions,
   AsyncValidatorFn,
   ValidatorFn,
+  FormGroup,
+  FormArray,
+  FormControl,
+  AbstractControl,
 } from '@angular/forms';
 
-/* eslint-disable */
-type FormGroup = import('@angular/forms').FormGroup;
-type FormArray = import('@angular/forms').FormArray;
-type FormControl = import('@angular/forms').FormControl;
-type AbstractControl = import('@angular/forms').AbstractControl;
-type Observable<T> = import('rxjs').Observable<T>;
+import { Observable } from 'rxjs';
 
 export type STATUS = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'; //<- I don't know why Angular Team doesn't define it https://github.com/angular/angular/blob/7.2.7/packages/forms/src/model.ts#L15-L45)
 export type STATUSs = STATUS | string; //<- string is added only becouse Angular base class use string instead of union type https://github.com/angular/angular/blob/7.2.7/packages/forms/src/model.ts#L196)
@@ -23,19 +22,19 @@ export interface AbstractControlTyped<T> extends AbstractControl {
   readonly status: STATUSs;
   statusChanges: Observable<STATUS>;
   get<V = unknown>(
-    path: Array<string | number> | string,
+    path: Array<string | number> | string
   ): AbstractControlTyped<V> | null;
   setValue<V>(
     value: V extends T ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   patchValue<V>(
     value: V extends Partial<T> ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   reset<V>(
     value?: V extends Partial<T> ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
 }
 
@@ -46,19 +45,19 @@ export interface FormControlTyped<T> extends FormControl {
   readonly status: STATUSs;
   statusChanges: Observable<STATUS>;
   get<V = unknown>(
-    path: Array<string | number> | string,
+    path: Array<string | number> | string
   ): AbstractControlTyped<V> | null;
   setValue<V>(
     value: V extends T ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   patchValue<V>(
     value: V extends Partial<T> ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   reset<V>(
     value?: V extends Partial<T> ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
 }
 
@@ -75,22 +74,22 @@ export interface FormGroupTyped<T, TArrayOverride extends keyof T = never>
   };
   registerControl<P extends keyof T>(
     name: P,
-    control: AbstractControlTyped<T[P]>,
+    control: AbstractControlTyped<T[P]>
   ): AbstractControlTyped<T[P]>;
   registerControl<V = any>(
     name: string,
-    control: AbstractControlTyped<V>,
+    control: AbstractControlTyped<V>
   ): AbstractControlTyped<V>;
   addControl<P extends keyof T>(
     name: P,
-    control: AbstractControlTyped<T[P]>,
+    control: AbstractControlTyped<T[P]>
   ): void;
   addControl<V = any>(name: string, control: AbstractControlTyped<V>): void;
   removeControl(name: keyof T): void;
   removeControl(name: string): void;
   setControl<P extends keyof T>(
     name: P,
-    control: AbstractControlTyped<T[P]>,
+    control: AbstractControlTyped<T[P]>
   ): void;
   setControl<V = any>(name: string, control: AbstractControlTyped<V>): void;
   contains(name: keyof T): boolean;
@@ -103,19 +102,19 @@ export interface FormGroupTyped<T, TArrayOverride extends keyof T = never>
   readonly status: STATUSs;
   statusChanges: Observable<STATUS>;
   get<V = unknown>(
-    path: Array<string | number> | string,
+    path: Array<string | number> | string
   ): AbstractControlTyped<V> | null;
   setValue<V>(
     value: V extends T ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   patchValue<V>(
     value: V extends Partial<T> ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   reset<V>(
     value?: V extends Partial<T> ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
 }
 
@@ -133,19 +132,19 @@ export interface FormArrayTyped<T> extends FormArray {
   readonly status: STATUSs;
   statusChanges: Observable<STATUS>;
   get<V = unknown>(
-    path: Array<string | number> | string,
+    path: Array<string | number> | string
   ): AbstractControlTyped<V> | null;
   setValue<V>(
     value: V extends T[] ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   patchValue<V>(
     value: V extends Partial<T>[] ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
   reset<V>(
     value?: V extends Partial<T>[] ? V : never,
-    options?: { onlySelf?: boolean; emitEvent?: boolean },
+    options?: { onlySelf?: boolean; emitEvent?: boolean }
   ): void;
 }
 
@@ -155,12 +154,12 @@ export type FormGroupBuilderOptionsTyped<T> = {
     | [{ value: T[P]; disabled?: boolean } | T[P]]
     | [
         { value: T[P]; disabled?: boolean } | T[P],
-        ValidatorFn | AbstractControlOptions | ValidatorFn[],
+        ValidatorFn | AbstractControlOptions | ValidatorFn[]
       ]
     | [
         { value: T[P]; disabled?: boolean } | T[P],
         ValidatorFn | AbstractControlOptions | ValidatorFn[],
-        AsyncValidatorFn | AsyncValidatorFn[],
+        AsyncValidatorFn | AsyncValidatorFn[]
       ]
     | FormGroupTyped<T[P]>
     | FormArrayTyped<ExtractArrayElementTypes<T[P]>>;
