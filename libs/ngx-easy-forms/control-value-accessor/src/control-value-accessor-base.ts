@@ -43,7 +43,8 @@ import {
  */
 @Directive()
 export abstract class ControlValueAccessorBase<
-  T extends AbstractControl = AbstractControl
+  T extends AbstractControl = AbstractControl,
+  V = any
 > implements ControlValueAccessor, OnDestroy, OnInit
 {
   destroy$ = new Subject();
@@ -75,8 +76,11 @@ export abstract class ControlValueAccessorBase<
     return this.control.disabled;
   }
 
-  values$!: Observable<any>;
-  @Output() valueChanges!: Observable<any>;
+  @Input() set value(value: V) {
+    this.control.patchValue(value, { emitEvent: false });
+  }
+
+  @Output() valueChanges!: Observable<V>;
 
   constructor(injector: Injector) {
     this.injector = injector;
@@ -116,7 +120,7 @@ export abstract class ControlValueAccessorBase<
     const isArrayOrGroup =
       this.control instanceof FormArray || this.control instanceof FormGroup;
 
-    this.values$ = this.control.valueChanges.pipe(
+    this.valueChanges = this.control.valueChanges.pipe(
       isArrayOrGroup
         ? distinctUntilChanged(
             (a, b) => JSON.stringify(a) === JSON.stringify(b)
@@ -124,14 +128,12 @@ export abstract class ControlValueAccessorBase<
         : distinctUntilChanged(),
       map((value) => this.beforeChange(value))
     );
-    this.values$
+    this.valueChanges
       .pipe(skip(1), takeUntil(this.destroy$))
       .subscribe((value) => this.onChange?.(value));
     this.touch$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => this.onTouch?.(value));
-
-    this.valueChanges = this.values$;
   }
 
   ngOnInit() {
