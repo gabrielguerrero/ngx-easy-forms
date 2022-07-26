@@ -2,6 +2,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   ChangeDetectorRef,
   Directive,
+  inject,
   InjectFlags,
   Injector,
   Input,
@@ -12,13 +13,14 @@ import {
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormArray,
-  FormBuilder,
-  FormGroup,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   NgControl,
   ValidationErrors,
   ValidatorFn,
   Validators,
+  FormBuilder,
 } from '@angular/forms';
 import { extractTouchedChanges } from './control-value-accesor.utils';
 import { SubmitDirective } from 'ngx-easy-forms/submit';
@@ -47,16 +49,18 @@ export abstract class ControlValueAccessorBase<
   V = any
 > implements ControlValueAccessor, OnDestroy, OnInit
 {
-  destroy$ = new Subject();
+  private readonly ngControl = inject(
+    NgControl,
+    InjectFlags.Self & InjectFlags.Optional
+  );
+  private changeDetectorRef = inject(ChangeDetectorRef, InjectFlags.Self);
+  private fb = inject(FormBuilder);
+  private submitDirective = inject(SubmitDirective, InjectFlags.Optional);
 
+  destroy$ = new Subject();
   control!: T;
-  private readonly injector: Injector;
-  private readonly ngControl: NgControl | null = null;
-  private submitDirective: SubmitDirective | null = null;
   touch$: Observable<boolean> | undefined;
   private _required = false;
-  protected formBuilder!: FormBuilder;
-  private changeDetectorRef!: ChangeDetectorRef;
 
   @Input()
   set required(required: boolean) {
@@ -82,31 +86,10 @@ export abstract class ControlValueAccessorBase<
 
   @Output() valueChanges!: Observable<V>;
 
-  constructor(injector: Injector) {
-    this.injector = injector;
-    if (this.injector) {
-      this.changeDetectorRef = this.injector.get(
-        ChangeDetectorRef,
-        null,
-        InjectFlags.Self
-      )!;
-      this.ngControl = this.injector.get(
-        NgControl,
-        null,
-        InjectFlags.Self & InjectFlags.Optional
-      );
-      this.ngControl && (this.ngControl.valueAccessor = this);
-      this.formBuilder = this.injector.get(FormBuilder);
-      this.control = this.buildControl(this.formBuilder);
-
-      this.submitDirective = this.injector.get(
-        SubmitDirective,
-        null,
-        InjectFlags.Optional
-      );
-      this.submitDirective?.registerForValidation(this);
-    }
-
+  constructor() {
+    this.ngControl && (this.ngControl.valueAccessor = this);
+    this.control = this.buildControl(this.fb);
+    this.submitDirective?.registerForValidation(this);
     this.initControl();
   }
 
@@ -118,7 +101,8 @@ export abstract class ControlValueAccessorBase<
      * value.
      * */
     const isArrayOrGroup =
-      this.control instanceof FormArray || this.control instanceof FormGroup;
+      this.control instanceof UntypedFormArray ||
+      this.control instanceof UntypedFormGroup;
 
     this.valueChanges = this.control.valueChanges.pipe(
       isArrayOrGroup
@@ -206,8 +190,8 @@ export abstract class ControlValueAccessorBase<
 
   protected beforePatch(value: any) {
     if (value == null) {
-      if (this.control instanceof FormGroup) return {};
-      if (this.control instanceof FormArray) return [];
+      if (this.control instanceof UntypedFormGroup) return {};
+      if (this.control instanceof UntypedFormArray) return [];
     }
     return value;
   }
@@ -243,8 +227,8 @@ export abstract class ControlValueAccessorBase<
 
   protected isControlValueEmpty(value: any) {
     if (value != null && typeof value === 'object') {
-      if (this.control instanceof FormGroup) return isObjectEmpty(value);
-      if (Array.isArray(value) && this.control instanceof FormArray) {
+      if (this.control instanceof UntypedFormGroup) return isObjectEmpty(value);
+      if (Array.isArray(value) && this.control instanceof UntypedFormArray) {
         return value.length === 0;
       }
     } else if (value == null) {

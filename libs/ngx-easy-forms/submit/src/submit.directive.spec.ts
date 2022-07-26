@@ -1,5 +1,10 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { spy, verify } from 'ts-mockito';
@@ -8,6 +13,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { createDirectiveFactory } from '@ngneat/spectator/jest';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { phl } from '@angular-extensions/pretty-html-log';
 
 describe('SubmitDirective', () => {
   const template = `
@@ -23,7 +29,11 @@ describe('SubmitDirective', () => {
       <button type="submit"></button>
     </form>
   `;
-
+  const getForm1 = () =>
+    new FormBuilder().group({
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+    });
   @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'something',
@@ -31,22 +41,12 @@ describe('SubmitDirective', () => {
     changeDetection: ChangeDetectionStrategy.OnPush,
   })
   class CustomHostComponent {
-    @Input() form = new FormBuilder().group({
-      name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-    });
-
+    @Input() form = getForm1();
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     submit() {}
   }
 
-  function init(
-    template: string,
-    form = new FormBuilder().group({
-      name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-    })
-  ) {
+  function init(template: string, form: FormGroup) {
     const spectator = createDirective(template, {
       hostProps: {
         form,
@@ -74,7 +74,7 @@ describe('SubmitDirective', () => {
   };
 
   it('on form submit check on input error form was not submitted', () => {
-    const { spectator, form, host } = init(template);
+    const { spectator, form, host } = init(template, getForm1());
     const hostSpy = spy(host);
     spectator.query('form')?.dispatchEvent(new Event('submit'));
     spectator.detectChanges();
@@ -83,7 +83,7 @@ describe('SubmitDirective', () => {
   });
 
   it('on form submit check submit happens if form valid', () => {
-    const { spectator, form, host } = init(template);
+    const { spectator, form, host } = init(template, getForm1());
     const hostSpy = spy(host);
     form.patchValue({ name: 'Gabriel', email: 'gabriel@email.com' });
     spectator.query('form')?.dispatchEvent(new Event('submit'));
@@ -92,21 +92,21 @@ describe('SubmitDirective', () => {
     verify(hostSpy.submit()).once();
   });
 
-  it('check on error is scrolled to first available error', () => {
+  it('check on error is scrolled to first available error', async () => {
     const invalidSelector = '.mat-form-field-invalid';
-    const { spectator } = init(template);
-
+    const { spectator, form } = init(template, getForm1());
+    const querySelector = document.querySelector.bind(document);
     const documentQuerySelectorSpy = jest
       .spyOn(document, 'querySelector')
       .mockImplementation((selector) =>
         selector === invalidSelector
           ? (elementMock as Element)
-          : document.querySelector(selector)
+          : querySelector(selector)
       );
     const elementScrollIntoViewSpy = jest.spyOn(elementMock, 'scrollIntoView');
     spectator.query('form')?.dispatchEvent(new Event('submit'));
     spectator.detectChanges();
-    expect(documentQuerySelectorSpy).toHaveBeenCalledTimes(1);
+    expect(form.invalid).toBeTruthy();
     expect(documentQuerySelectorSpy).toHaveBeenCalledWith(invalidSelector);
     expect(elementScrollIntoViewSpy).toHaveBeenCalledTimes(1);
     expect(elementScrollIntoViewSpy).toHaveBeenCalledWith({
@@ -132,7 +132,7 @@ describe('SubmitDirective', () => {
         ],
       });
 
-      const { spectator, form, host } = init(template, form2);
+      const { spectator, host } = init(template, form2);
       const hostSpy = spy(host);
       form2.patchValue({ name: 'Gabriel', email: 'gabriel@email.com' });
       spectator.query('form')?.dispatchEvent(new Event('submit'));

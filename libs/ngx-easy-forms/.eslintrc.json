@@ -8,9 +8,6 @@
         "plugin:@nrwl/nx/angular",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "parserOptions": {
-        "project": ["libs/ngx-easy-forms/tsconfig.*?.json"]
-      },
       "rules": {
         "@nrwl/nx/enforce-module-boundaries": "off",
         "@typescript-eslint/ban-types": "off",

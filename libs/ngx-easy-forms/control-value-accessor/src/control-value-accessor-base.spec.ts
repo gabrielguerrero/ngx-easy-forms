@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Injector,
-  Input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -14,7 +9,6 @@ import {
 } from '@angular/forms';
 import { ControlValueAccessorBase } from './control-value-accessor-base';
 import { forceValidation } from 'ngx-easy-forms/form-utils';
-import { typedFbGroup } from 'ngx-easy-forms/typed-forms';
 // eslint-disable-next-line no-restricted-imports
 import { createHostFactory } from '@ngneat/spectator/jest';
 
@@ -26,7 +20,7 @@ describe('ControlValueAccessorBase', () => {
     changeDetection: ChangeDetectionStrategy.OnPush,
   })
   class CustomHostComponent {
-    form = new FormControl(null, Validators.required);
+    form = new FormControl<any>(null, Validators.required);
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     valueChanges() {}
@@ -40,10 +34,6 @@ describe('ControlValueAccessorBase', () => {
   })
   class FormControlComponent extends ControlValueAccessorBase<FormControl> {
     @Input() default: string | undefined;
-
-    constructor(injector: Injector) {
-      super(injector);
-    }
 
     ngOnInit() {
       super.ngOnInit();
@@ -68,12 +58,8 @@ describe('ControlValueAccessorBase', () => {
     changeDetection: ChangeDetectionStrategy.OnPush,
   })
   class FormGroupComponent extends ControlValueAccessorBase<FormGroup> {
-    constructor(injector: Injector, private fb: FormBuilder) {
-      super(injector);
-    }
-
     buildControl(fb: FormBuilder) {
-      return typedFbGroup(fb, {
+      return fb.group({
         name: [],
         email: [null, Validators.required],
       });
@@ -98,10 +84,6 @@ describe('ControlValueAccessorBase', () => {
   /** TODO remove support for FormArray angular forces you to always wrap a form array inside a form group
      because there is no directive like [formGroup] before it worked because types in templates where not check */
   class FormArrayComponent extends ControlValueAccessorBase<FormArray> {
-    constructor(injector: Injector) {
-      super(injector);
-    }
-
     buildControl(fb: FormBuilder) {
       return fb.array([
         fb.group({
