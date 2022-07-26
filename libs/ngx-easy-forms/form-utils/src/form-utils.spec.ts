@@ -16,7 +16,6 @@ import {
 } from 'ngx-easy-forms/form-utils';
 import { of } from 'rxjs/internal/observable/of';
 import { spy, verify } from 'ts-mockito';
-import { FormGroupTyped } from 'ngx-easy-forms/typed-forms';
 
 interface TestForm {
   name: string;
@@ -31,7 +30,7 @@ describe('Form utils test', () => {
         name: { value: '', disabled: true },
         title: { value: '', disabled: true },
         email: { value: '', disabled: true },
-      }) as FormGroupTyped<TestForm>;
+      });
       setDisableFields(false, form, ['name', 'email']);
       expect(form.controls.name.enabled).toBeTruthy();
       expect(form.controls.email.enabled).toBeTruthy();
@@ -44,7 +43,7 @@ describe('Form utils test', () => {
         name: { value: '', disabled: false },
         title: { value: '', disabled: false },
         email: { value: '', disabled: false },
-      }) as FormGroupTyped<TestForm>;
+      });
       setDisableFields(true, form, ['name', 'email']);
       expect(form.controls.name.disabled).toBeTruthy();
       expect(form.controls.email.disabled).toBeTruthy();
@@ -59,7 +58,7 @@ describe('Form utils test', () => {
         name: { value: '', disabled: true },
         title: { value: '', disabled: true },
         email: { value: '', disabled: true },
-      }) as FormGroupTyped<TestForm>;
+      });
       setDisableAllFieldsExcept(false, form, ['name', 'email']);
       expect(form.controls.name.disabled).toBeTruthy();
       expect(form.controls.email.disabled).toBeTruthy();
@@ -72,7 +71,7 @@ describe('Form utils test', () => {
         name: { value: '', disabled: false },
         title: { value: '', disabled: false },
         email: { value: '', disabled: false },
-      }) as FormGroupTyped<TestForm>;
+      });
       setDisableAllFieldsExcept(true, form, ['name', 'email']);
       expect(form.controls.name.enabled).toBeTruthy();
       expect(form.controls.email.enabled).toBeTruthy();

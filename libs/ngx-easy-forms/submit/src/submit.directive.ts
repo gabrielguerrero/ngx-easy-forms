@@ -60,6 +60,7 @@ export class SubmitDirective {
           const element = this._document.querySelector(
             '.mat-form-field-invalid'
           );
+          console.log('querySelector mat-form-field-invalid');
           if (element) {
             // we check element.scrollIntoView exist because in jest it doesnt,
             // otherwise will have to mock scrollView in all test

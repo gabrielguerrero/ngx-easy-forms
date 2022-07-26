@@ -2,11 +2,12 @@ import { Observable } from 'rxjs';
 import { filter, map, startWith, take } from 'rxjs/operators';
 import {
   AbstractControl,
+  FormGroup,
   FormArray,
   FormControl,
-  FormGroup,
+  UntypedFormGroup,
+  UntypedFormArray,
 } from '@angular/forms';
-import { FormGroupTyped } from 'ngx-easy-forms/typed-forms';
 
 export function forceValidation(form: AbstractControl, ...fields: string[]) {
   if (form instanceof FormGroup || form instanceof FormArray) {
@@ -107,22 +108,32 @@ export function isObjectEmpty(value: object) {
   return value == null || Object.values(value).every((v) => !v);
 }
 
-export function setDisableAllFieldsExcept<T, K extends keyof T>(
+export function setDisableAllFieldsExcept<
+  T extends {
+    [K in keyof T]: AbstractControl<any>;
+  },
+  K
+>(
   disable: boolean,
-  form: FormGroupTyped<T> | FormGroup,
+  form: FormGroup<T>,
   excludedFieldNames: K[],
   emitEvent = false
 ) {
   for (const control in form.controls) {
-    const fieldName = control as string as K;
+    const fieldName = control as unknown as K;
     if (excludedFieldNames.includes(fieldName))
       setDisableField(!disable, form, fieldName, emitEvent);
     else setDisableField(disable, form, fieldName, emitEvent);
   }
 }
-export function setDisableFields<T, K extends keyof T>(
+export function setDisableFields<
+  K,
+  T extends {
+    [K in keyof T]: AbstractControl<any>;
+  } = any
+>(
   disable: boolean,
-  form: FormGroupTyped<T> | FormGroup,
+  form: FormGroup<T> | UntypedFormGroup,
   fieldNames: K[],
   emitEvent = false
 ) {
@@ -131,15 +142,15 @@ export function setDisableFields<T, K extends keyof T>(
   }
 }
 
-export function setDisableField<T, K extends keyof T>(
-  disable: boolean,
-  form: FormGroupTyped<T> | FormGroup,
-  fieldName: K,
-  emitEvent = false
-) {
+export function setDisableField<
+  T extends {
+    [K in keyof T]: AbstractControl<any>;
+  },
+  K
+>(disable: boolean, form: FormGroup<T>, fieldName: K, emitEvent = false) {
   disable
-    ? form.get(fieldName as string)!.disable({ emitEvent })
-    : form.get(fieldName as string)!.enable({ emitEvent });
+    ? form.get(fieldName as unknown as string)!.disable({ emitEvent })
+    : form.get(fieldName as unknown as string)!.enable({ emitEvent });
 }
 
 /**
@@ -150,7 +161,7 @@ export function setDisableField<T, K extends keyof T>(
  * @param selectId function that return the identifier of each row
  */
 export function rebuildFormArray<T>(
-  form: FormArray,
+  form: UntypedFormArray | FormArray,
   buildRow: (value: T) => AbstractControl,
   values: T[],
   selectId: (value: T) => string

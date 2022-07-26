@@ -27,7 +27,7 @@
           "builder": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ngx-easy-forms"],
           "options": {
-            "jestConfig": "libs/ngx-easy-forms/jest.config.js",
+            "jestConfig": "libs/ngx-easy-forms/jest.config.ts",
             "passWithNoTests": true
           }
         },
@@ -38,52 +38,11 @@
               "libs/ngx-easy-forms/src/**/*.ts",
               "libs/ngx-easy-forms/src/**/*.html"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         }
-      }
-    }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/angular"
-  },
-  "schematics": {
-    "@nrwl/angular": {
-      "application": {
-        "linter": "eslint"
       },
-      "library": {
-        "linter": "eslint"
-      },
-      "storybook-configuration": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/angular:application": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "style": "scss",
-      "linter": "eslint",
-      "unitTestRunner": "jest"
-    },
-    "@nrwl/angular:component": {
-      "style": "scss"
-    },
-    "@schematics/angular": {
-      "component": {
-        "inlineStyle": true,
-        "inlineTemplate": true,
-        "changeDetection": "OnPush"
-      }
-    },
-    "@ngneat/spectator:spectator-component": {
-      "jest": true,
-      "inlineStyle": true,
-      "inlineTemplate": true,
-      "changeDetection": "OnPush"
+      "tags": []
     }
   }
 }
